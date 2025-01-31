@@ -1,0 +1,32 @@
+theme:
+        default: style-light
+site:
+        title: Cetuxi's Home
+favicon:
+  logo: favicon-32x32.png
+  icon16: favicon-16x16.png
+  icon32: favicon-32x32.png
+  apple_touch_icon: apple-touch-icon.png
+  webmanifest: /site.webmanifest
+  visibilitychange: true
+  hidden: failure.ico
+  show_text: (/≧▽≦/)
+  hide_text: (●—●)
+user:
+        name: Cetuxi
+        email: y1079497319@outlook.com
+        avatar: /img/avatar.jpg
+        describe: Cetuxi's home
+top_bars:
+  - title: home
+    url: /
+  - title: archives
+    url: /archives/
+    noswup: true
+  - title: about
+    url: /about
+    noswup: true
+
+sidebar:
+        typed_text_prefix: "NO"
+        typed_text: ["TIME", "MONEY", "WORRIES"]
