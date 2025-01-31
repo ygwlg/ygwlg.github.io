@@ -3,19 +3,24 @@ theme:
 site:
         title: Cetuxi's Home
 favicon:
-  logo: favicon-32x32.png
-  icon16: favicon-16x16.png
-  icon32: favicon-32x32.png
+  logo: cat.svg
+  icon16: cat.svg
+  icon32: cat.svg
   apple_touch_icon: apple-touch-icon.png
   webmanifest: /site.webmanifest
   visibilitychange: true
   hidden: failure.ico
-  show_text: (/≧▽≦/)
-  hide_text: (●—●)
+  show_text: (/≧▽≦/)咦！又好了！
+  hide_text: (●—●)喔哟，崩溃啦！
+
+assets:
+  third_party_provider: https://npm.elemecdn.com
 user:
         name: Cetuxi
+        first_name: come
+        last_name: Wel
         email: y1079497319@outlook.com
-        avatar: /img/avatar.jpg
+        avatar: images/avatar.jpg
         domain: https://ygwlg.github.io/
         describe: Cetuxi's home
 top_bars:

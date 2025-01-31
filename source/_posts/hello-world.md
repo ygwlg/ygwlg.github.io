@@ -1,5 +1,6 @@
 ---
 title: Hello Hexo
+categories: Hexo
 tags:
     - Hexo
 ---
