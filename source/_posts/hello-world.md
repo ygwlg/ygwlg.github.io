@@ -82,3 +82,5 @@ hexo server -p 80 -i 0.0.0.0
 ```
 
 ### 部署github page
+
+[**官方部署文档**](https://hexo.io/zh-cn/docs/github-pages)
