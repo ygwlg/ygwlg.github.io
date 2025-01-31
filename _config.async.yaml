@@ -15,7 +15,7 @@ favicon:
 user:
         name: Cetuxi
         email: y1079497319@outlook.com
-        avatar: /img/avatar.jpg
+        avatar: avatar.jpg
         describe: Cetuxi's home
 top_bars:
   - title: home
