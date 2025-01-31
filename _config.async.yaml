@@ -15,7 +15,8 @@ favicon:
 user:
         name: Cetuxi
         email: y1079497319@outlook.com
-        avatar: avatar.jpg
+        avatar: /img/avatar.jpg
+        domain: https://ygwlg.github.io/
         describe: Cetuxi's home
 top_bars:
   - title: home
@@ -24,7 +25,7 @@ top_bars:
     url: /archives/
     noswup: true
   - title: about
-    url: /about
+    url: /about/
     noswup: true
 
 sidebar:
