@@ -7,7 +7,7 @@ title: Cetuxi's Home
 subtitle: ''
 description: ''
 keywords:
-author: Van
+author: Cetuxi
 language: zh-Hans
 timezone: 'Asia/Shanghai'
 
@@ -104,3 +104,7 @@ deploy:
   type: git
   repo: https://github.com/ygwlg/ygwlg.github.io/
   branch: main
+
+# Latex
+mathjax:
+  every_page: true

@@ -8,31 +8,90 @@ favicon:
   icon32: cat.svg
   apple_touch_icon: apple-touch-icon.png
   webmanifest: /site.webmanifest
-  visibilitychange: true
-  hidden: failure.ico
-  show_text: (/≧▽≦/)咦！又好了！
-  hide_text: (●—●)喔哟，崩溃啦！
+  # visibilitychange: true
+  hidden: cat.svg
+  # show_text: (/≧▽≦/)咦！又好了！
+  # hide_text: (●—●)喔哟，崩溃啦！
 
 assets:
   third_party_provider: https://npm.elemecdn.com
 user:
         name: Cetuxi
-        first_name: come
-        last_name: Wel
+        first_name: Home
+        last_name: "Cetuxi's "
         email: y1079497319@outlook.com
         avatar: images/avatar.jpg
         domain: https://ygwlg.github.io/
         describe: Cetuxi's home
+
+about:
+  title: 关山难越，谁悲失路之人。</br>萍水相逢，尽是他乡之客。<br><div align="right" >——《滕王阁序》</div>
+  introduction: 
+    您好，我是Cetuxi，感谢您在浩如烟海的互联网中浏览这个博客。
+    建立这个博客是出于兴趣爱好，我将在这里分享一些学习笔记，可能还会分享少许游戏攻略等有趣的事物。
+    希望这里的文字能为您提供一些有用的信息和灵感。
+  blog: 
+    <ul class="trm-list">
+      <li>程序：<a href="https://github.com/hexojs/hexo">Hexo</a></li>
+      <li>主题：<a href="https://hexo-theme-async.imalun.com/">Hexo-theme-async</a></li>
+      <li>网页背景图片来源：<a href="https://tongyi.aliyun.com/wanxiang/">阿里云通义万相</a></li>
+      <li>网页icon来源：<a href="https://www.iconfont.cn/">阿里巴巴矢量图标库</a></li>
+    </ul>
+  privacy: 
+    本站不会收集任何个人信息，也不会使用任何第三方分析工具。
+    如有链接或工具侵权，请及时邮件告知，谢谢！
+
 top_bars:
-  - title: home
+  - title: 首页
     url: /
-  - title: archives
+  - title: 分类
+    url: /categories/
+  - title: 标签
+    url: /tag/
+  - title: 归档
     url: /archives/
     noswup: true
-  - title: about
+  - title: 关于
     url: /about/
     noswup: true
 
 sidebar:
         typed_text_prefix: "NO"
         typed_text: ["TIME", "MONEY", "WORRIES"]
+        info: 
+          - key: "REGION"
+            val: "JIANGSU"
+          - key: "GENDER"
+            val: "WALLMART BAG"
+
+
+banner:
+  default:
+    type: img
+    bgurl: ["images/banner-bg/index-light.png", "images/banner-bg/index-dark.png"]  
+  index:
+    banner_title: 疏影横斜水清浅，<br>暗香浮动月黄昏。
+    banner_text: Welcome to Cetuxi's Home!
+  archive:
+    bannner_title: 醉后不知天在水，<br>满船清梦压星河。
+    banner_text: Articles Archives.
+  link:
+    banner_title: 萍水相逢，<br>尽是他乡之客。
+    banner_text: Links.
+  about:
+    banner_title: 关山难越，<br>谁悲失路之人。
+    banner_text: About Cetuxi.
+
+# The previous and the next article | 上下篇文章
+post_pagination:
+  enable: true # 启用
+  type: large # 卡片类型 <[large,small]> 
+
+# Home page category card configuration | 首页分类卡片
+categorie_card:
+  enable: true # enable | 启用
+  len: 3 # 长度
+  # list: # 固定显示分类 <string[]>
+ 
+layout:
+   page_category: async/page_category.ejs
