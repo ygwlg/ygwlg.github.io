@@ -20,7 +20,8 @@ jobs:
           # Examples: 20, 18.19, >=16.20.2, lts/Iron, lts/Hydrogen, *, latest, current, node
           # Ref: https://github.com/actions/setup-node#supported-version-syntax
           node-version: "18"
-       - name: Install pandoc
+      - name: Install pandoc
+        uses: actions/setup-node@v4
         run: |
           cd /tmp
           wget -c https://github.com/jgm/pandoc/releases/download/2.14.0.3/pandoc-2.14.0.3-1-amd64.deb
