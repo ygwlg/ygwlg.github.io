@@ -183,6 +183,47 @@ print(str(cc))
 
 用一个进程同时处理监视多个IO请求的结果
 
+1. **selector模式** 用select、poll、epoll等机制，向内核注册多个文件描述符，然后阻塞等待这些描述符上的事件，比如可读可写。当事件发生时，内核通知应用程序。
+
+2. **proactor模式** 程序发起一个异步的I/O操作（读/写），然后继续处理其他业务，当I/O操作完成时，操作系统通知应用程序处理。
+
+asyncio模块在windows系统中默认使用 ProactorEventLoop编写，Linux上默认使用SelectorEventLoop编写。这是由于Proactor是异步非阻塞IO，当IO操作完成时，由操作系统内核通知使用者，而selector作为同步io，不同IO任务注册的回调函数将会同步执行，所以理论上proactor的效率更高一些。
+
+```python
+import asyncio
+
+print(asyncio.get_event_loop())
+
+# Windows: <ProactorEventLoop running=False closed=False debug=False>
+
+# Linux: <_UnixSelectorEventLoop running=False closed=False debug=False>
+```
+
+对于多路复用模块selector而言
+
+```python
+import selectors
+
+print(selectors.DefaultSelector())
+
+# Windows: <selectors.SelectSelector object at 0x000002026FCD3F10>
+
+# Linux: <selectors.EpollSelector object at 0x7f34de7f2b10>
+```
+
+几种selector的对比：
+| 机制 | 原理 | 适用场景 |
+|---|---|---|
+| select | 上限为1024，遍历所有fd，无论事件是否就绪，时间复杂度为O(n) | 平台兼容，低并发 |
+| poll | 结构体数组，理论无上限，但是仍需遍历 | 需要突破 1024 fd 限制，但无需高性能的场景 |
+| epoll | 红黑树+就绪连表，仅关注活跃事件，由内核维护fd列表，时间复杂度为O(1) | 高并发（如 Web 服务器、实时通信）、Linux 环境 |
+
+水平触发与边缘触发
+
+水平触发： IO就绪时持续触发
+
+边缘触发： IO就绪时触发一次
+
 #### 信号驱动
 
 等待数据阶段就绪不阻塞，数据就绪后内核给进程发送信号，复制数据阶段阻塞
