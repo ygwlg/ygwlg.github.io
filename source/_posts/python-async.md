@@ -294,7 +294,7 @@ t.join()  # 等待线程执行结束
 
 | 参数名 | 参数含义 |
 |-------|-------|
-| group | *group* should be None; reserved for future extension when a ThreadGroup </br> class is implemented.</br>用来实现线程分组的功能，但是功能还没实现 |
+| group | *group* should be None; reserved for future extension when a ThreadGroup  class is implemented. 用来实现线程分组的功能，但是功能还没实现 |
 | target | 可执行对象，一般是线程的目标函数 |
 | name | 线程名，默认Thread-N |
 | daemon | 守护线程 |
@@ -658,7 +658,7 @@ if __name__ == '__main__':
 | 参数名称 | 参数含义 |
 |--------|--------|
 | max_workers | 进程池中允许的最大进程数，默认值为 os.cpu_count()，即逻辑处理器数量 |
-| mp_context | 多进程上下文，控制进程的启动方式 </br> fork：在Unix系统中常用，通过进程复制创建子线程 </br> spawn：用全新的Python解释器创建子进程 </br> forkserver: 启动一个独立的服务器进程来管理子进程 |
+| mp_context | 多进程上下文，控制进程的启动方式  ** fork ** ：在Unix系统中常用，通过进程复制创建子线程 ** spawn ** ：用全新的Python解释器创建子进程  ** forkserver ** : 启动一个独立的服务器进程来管理子进程 |
 | initializer | 初始化函数，对于每个进程调用 |
 | initargs | 初始化函数的参数 |
 
