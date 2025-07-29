@@ -294,7 +294,7 @@ t.join()  # 等待线程执行结束
 
 | 参数名 | 参数含义 |
 |-------|-------|
-| group | *group* should be None; reserved for future extension when a ThreadGroup  class is implemented. 用来实现线程分组的功能，但是功能还没实现 |
+| group | *group* should be None; reserved for future extension when a ThreadGroup  <br/> class is implemented. 用来实现线程分组的功能，但是功能还没实现 |
 | target | 可执行对象，一般是线程的目标函数 |
 | name | 线程名，默认Thread-N |
 | daemon | 守护线程 |
@@ -658,7 +658,7 @@ if __name__ == '__main__':
 | 参数名称 | 参数含义 |
 |--------|--------|
 | max_workers | 进程池中允许的最大进程数，默认值为 os.cpu_count()，即逻辑处理器数量 |
-| mp_context | 多进程上下文，控制进程的启动方式  ** fork ** ：在Unix系统中常用，通过进程复制创建子线程 ** spawn ** ：用全新的Python解释器创建子进程  ** forkserver ** : 启动一个独立的服务器进程来管理子进程 |
+| mp_context | 多进程上下文，控制进程的启动方式 <br/> ** fork ** ：在Unix系统中常用，通过进程复制创建子线程<br/> ** spawn ** ：用全新的Python解释器创建子进程<br/>  ** forkserver ** : 启动一个独立的服务器进程来管理子进程 |
 | initializer | 初始化函数，对于每个进程调用 |
 | initargs | 初始化函数的参数 |
 
@@ -851,3 +851,58 @@ typecode_to_type = {
 
 ```
 其中RawValue和RawArray无锁，Value和Array带锁
+
+
+多进程如何进行复杂对象的传输
+
+```Python
+import multiprocessing
+from multiprocessing import Manager
+from multiprocessing.managers import SyncManager
+import time
+
+
+class A:
+    def a(self):
+        print('aaa--', multiprocessing.current_process().name)
+
+
+def worker1(shared_obj):
+    shared_obj.a()
+
+    print('woker1', multiprocessing.current_process().name)
+
+
+def worker2(shared_obj):
+    shared_obj.a()
+
+    print('woker2', multiprocessing.current_process().name)
+
+if __name__ == '__main__':
+    SyncManager.register('A', A)
+    # 创建Manager对象
+    manager = SyncManager()
+    # 创建共享对象
+    manager.register('A', A)
+    # a = A()
+    manager.start()
+    ma = manager.A()
+    # 创建进程
+    p1 = multiprocessing.Process(target=worker1, args=(ma,))
+    p2 = multiprocessing.Process(target=worker2, args=(ma,))
+
+    # 启动进程
+    p1.start()
+    p2.start()
+
+    # 等待进程结束
+    p1.join()
+    p2.join()
+
+# aaa-- SyncManager-1
+# woker1 Process-2
+# aaa-- SyncManager-1
+# woker2 Process-3
+```
+
+本质是额外启动Manager进程，其余进程为每个对象创建对象代理，通过管道通信调用访问对象。
