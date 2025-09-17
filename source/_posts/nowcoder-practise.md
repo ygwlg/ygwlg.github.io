@@ -20,7 +20,7 @@ tags:
 1. 记录范围内所有质数
 2. 对于每个质数，计算x的次数
 
-如何计算范围内所有的质数？
+如何计算范围内所有的质数？（埃氏筛）
 
 1. 标记范围内的所有整数为质数
 2. 从最小的质数2开始遍历迭代因子，将迭代因子的整数倍数字标记为非质数
@@ -536,7 +536,7 @@ def f(n):
                     ret += '3'
                     islimit = False
                 else:
-dp,                     ret += item
+                    ret += item
     return ret
 
 
@@ -583,4 +583,89 @@ def dfs(i, c):
 
 print(dfs(0, k))
 ```
+
+## 18. 散落的金币
+
+尚未解出
+
+## 19. 相遇
+
+思路：每个向左走的人会创到其左边向右走的人
+
+实现：
+```Python
+n = int(input())
+
+ps = []
+for _n in range(n):
+    xi, ai = [int(_) for _ in input().split()]
+    ps.append((xi, ai))
+ps.sort()
+
+pre1 = 0
+ret = 0
+for xi, ai in ps:
+    if ai == 1:
+        pre1 += 1
+    else:
+        ret += pre1
+print(ret)
+```
+
+## 20. 小红的red字符串
+
+思路：r,e,d三种字符数一致，相当于 `r-e = r-d = 0`
+记录前缀字符串每个位置的差值种类的数量；有相同差值的代表子字符串的三种字符相等，对其求和即为结果
+
+```Python
+s = input()
+rme, rmd = 0, 0
+
+pres = {(0, 0): 1}
+
+ret = 0
+
+for letter in s:
+    if letter == 'r':
+        rme += 1
+        rmd += 1
+    elif letter == 'e':
+        rme -= 1
+    else:
+        rmd -= 1
+    
+    if (rme, rmd) in pres:
+        ret += pres[(rme, rmd)]
+    
+    if (rme, rmd) not in pres:
+        pres[(rme, rmd)] = 0
+    pres[(rme, rmd)] += 1
+print(ret)
+```
+
+## 21. 小红的位运算
+
+从高位到低位遍历，逐渐减少候选集，如果当前遍历位能够满足有k个候选，则选取当前位并更新候选集
+
+```Python
+n, k = [int(_) for _ in input().split()]
+a = [int(_) for _ in input().split()]
+ma = max(a)
+
+mb = ma.bit_length()
+
+for i in range(mb, -1, -1):
+    new_a = []
+    for num in a:
+        if (num >> i) & 1:
+            new_a.append(num)
+    if len(new_a) >= k:
+        a = new_a
+ret = a[0]
+for i in range(1, len(a)):
+    ret &= a[i]
+print(ret)
+```
+
+## 22. 小红的v三元组
 
