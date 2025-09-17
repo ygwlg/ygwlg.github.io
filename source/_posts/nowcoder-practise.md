@@ -669,3 +669,197 @@ print(ret)
 
 ## 22. 小红的v三元组
 
+思路：对于每个中间元素，寻找左右两边大于该元素的相等元素组；这是个单点更新的区间和问题，用线段树解决
+
+具体步骤：
+
+1. 通过离散化将数据范围缩小至10^5,同时保留相对的大小关系
+
+2. 预处理所有数出现的频率count
+
+3. 建立FenWick线段树
+
+4. 自左向右遍历数组，先统计大于x的区间和，再单点更新线段树的x值
+
+```Python
+
+import sys
+data = sys.stdin.read().split()
+n = int(data[0])
+a = list(map(int, data[1:1 + n]))
+
+# 1. 离散化
+unique_vals = sorted(set(a))
+comp_map = {}
+for idx, val in enumerate(unique_vals):
+    comp_map[val] = idx
+for i in range(n):
+    a[i] = comp_map[a[i]] + 1
+
+M = len(unique_vals)
+# 2. 预处理count
+counts = [0] * (M + 1)
+for i, ai in enumerate(a):
+    counts[ai] += 1
+
+# 3. 建立线段树
+class FenwickTree:
+    def __init__(self, n: int):
+        self.tree = [0] * (n + 1)  # 使用下标 1 到 n
+
+    # a[i] 增加 val
+    # 1 <= i <= n
+    # 时间复杂度 O(log n)
+    def update(self, i: int, val: int) -> None:
+        t = self.tree
+        while i < len(t):
+            t[i] += val
+            i += i & -i
+
+    # 计算前缀和 a[1] + ... + a[i]
+    # 1 <= i <= n
+    # 时间复杂度 O(log n)
+    def pre(self, i: int) -> int:
+        t = self.tree
+        res = 0
+        while i > 0:
+            res += t[i]
+            i -= i & -i
+        return res
+
+    # 计算区间和 a[l] + ... + a[r]
+    # 1 <= l <= r <= n
+    # 时间复杂度 O(log n)
+    def query(self, l: int, r: int) -> int:
+        if r < l:
+            return 0
+        return self.pre(r) - self.pre(l - 1)
+
+# 作者：灵茶山艾府
+# 链接：https://leetcode.cn/discuss/post/mOr1u6/
+# 来源：力扣（LeetCode）
+# 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+ret = 0
+t = FenwickTree(M)
+pre_counts = [0] * (M + 1)
+for ai in a:
+    if ai < M:
+        ret += t.query(ai + 1, M)
+    old_cmp = counts[ai] * pre_counts[ai]
+    pre_counts[ai] += 1
+    counts[ai] -= 1
+    new_cmp = counts[ai] * pre_counts[ai]
+    t.update(ai, new_cmp - old_cmp)
+print(ret)
+
+```
+
+## 23. Monica的树
+
+思路：每个结点的取值为其父节点取值 + 1（R）或 - 1（B），通过dp求解
+
+步骤：先深搜找到每个节点的parent；再通过记忆化搜索求得结果
+
+** 有坑：默认最大递归深度需要设置 **
+
+~~ 到底还是被leetcode惯的，牛客需要自己设置递归深度 ~~
+
+```Python
+import sys
+sys.setrecursionlimit(10 ** 9)
+from functools import cache
+n = int(input())
+colors = input()
+
+edges = {}
+for _ in range(n - 1):
+    a, b = [int(_) for _ in input().split()]
+    
+    if a not in edges:
+        edges[a] = []
+    if b not in edges:
+        edges[b] = []
+    edges[a].append(b)
+    edges[b].append(a)
+
+parents = [-1] * (n + 1)
+parents[1] = 0
+def find_p(node, parent):
+    for child in edges[node]:
+        if not child == parent and parents[child] < 0:
+            parents[child] = node
+            find_p(child, node)
+
+find_p(1, 0)
+# print(parents)
+@cache
+def dfs(node):
+    if node == 0:
+        return 0
+    return dfs(parents[node]) + (1 if colors[node - 1] == 'R' else -1)
+
+ret = 0
+for i in range(1, n + 1):
+    ret += abs(dfs(i))
+print(ret)
+
+```
+
+
+## 24. 小欧的括号操作
+
+思路：贪心，栈；自左向右遍历，如果是 ` ( `则放入栈中，如果是 ` ) ` 则从栈顶弹出尽可能多的 ` ( ` ，并将整个弹出的元素合并成 ` ( `， 如果栈顶一个 ` ( `都没有，意味着不能够合并，只能把 ` ) ` 压栈。
+
+实现：
+
+``` Python
+
+braces = input()
+
+stack = []
+
+for b in braces:
+    if b == '(':
+        stack.append(b)
+    else:
+        flag = False
+        while stack and stack[-1] == '(':
+            flag = True
+            stack.pop(-1)
+        if flag:
+            stack.append('(')
+        else:
+            stack.append(')')
+print(len(stack))
+```
+
+## 25. 小欧的选数乘积
+
+
+思路：数组去重后贪心，每次都选最大值
+
+
+实现：
+```Python
+x, y = [int(_) for _ in input().split()]
+n = int(input())
+a = [int(_) for _ in input().split()]
+
+a = list(set(a))
+a.sort(reverse=True)
+
+def cal():
+    global x, y, n, a
+    ret = 0
+    while x < y and a:
+        x *= a.pop(0)
+        ret += 1
+    if x >= y:
+        return ret
+    return -1
+
+print(cal())
+```
+
+## 26. 
