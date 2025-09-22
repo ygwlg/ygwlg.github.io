@@ -862,4 +862,350 @@ def cal():
 print(cal())
 ```
 
-## 26. 
+## 26. 小红的子树操作
+
+思路：只要求所有查询最后打印结果，因此先记录更新值，最后在遍历树
+
+```Python
+n = int(input())
+a = [int(_) for _ in input().split()]
+
+conns = {}
+for _ in range(n - 1):
+    u, v = [int(_) for _ in input().split()]
+    if u not in conns:
+        conns[u] = []
+    if v not in conns:
+        conns[v] = []
+    conns[u].append(v)
+    conns[v].append(u)
+
+
+def get25(x):
+    k = x
+    count2 = 0
+    while k and k % 2 == 0:
+        count2 += 1
+        k >>= 1
+    k = x
+    count5 = 0
+    while k and k % 5 == 0:
+        count5 += 1
+        k //= 5
+    return count2, count5
+
+# 1. 找出每个节点的父节点
+parents = [-1] * (n + 1)
+count_childs = [0] * (n + 1)
+import sys
+sys.setrecursionlimit(10 ** 9)
+def find_p(node, parent):
+    parents[node] = parent
+    node_child_count = 1
+    for c in conns[node]:
+        if not c == parent:
+            node_child_count += find_p(c, node)
+    count_childs[node] = node_child_count
+    return node_child_count
+
+find_p(1, 0)
+
+
+tags2 = [0] * (n + 1)
+tags5 = [0] * (n + 1)
+
+q = int(input())
+for _ in range(q):
+    x, y = [int(_) for _ in input().split()]
+    y2, y5 = get25(y)
+    
+    tags2[x] += y2
+    tags5[x] += y5
+
+
+# 2. 处理询问
+def update_forward(node):
+    for c in conns[node]:
+        if not c == parents[node]:
+            tags2[c] += tags2[node]
+            tags5[c] += tags5[node]
+
+            update_forward(c)
+
+update_forward(1)
+
+# 3. 统计结果
+
+count2 = [0] * (n + 1)
+count5 = [0] * (n + 1)
+
+for i in range(1, n + 1):
+    c2, c5 = get25(a[i - 1])
+    count2[i] = c2 + tags2[i]
+    count5[i] = c5 + tags5[i]
+
+
+from functools import cache
+@cache
+def cal(node):
+    node_c2, node_c5 = count2[node], count5[node]
+    for c in conns[node]:
+        if not c == parents[node]:
+            cc2, cc5 = cal(c)
+            node_c2 += cc2
+            node_c5 += cc5
+    return node_c2, node_c5
+
+for i in range(1, n + 1):
+    print(min(cal(i)), end=' ')
+```
+
+## 27. 小红的好red串（一）
+
+
+思路： 贪心，自左向右遍历，如果当前字符s[i]和上一个字符s[i-1]相同，则将本字符s[i]和下一个字符s[i+1]替换成不与s[i+2]相同的第三种字符
+
+```Python
+import sys
+
+s = input()
+n = len(s)
+ret = 0
+i = 1 
+tag = False
+while i < n:
+    if s[i] == s[i - 1] and not tag:
+        i += 2
+        ret += 1
+        tag = True
+    else:
+        tag = False
+        i += 1
+print(ret)
+
+```
+
+## 28. 进制转换
+
+简单模拟
+
+```Python
+s = input()
+ret = set()
+MOD = 10 ** 9 + 7
+for i in range(2, 17):
+    try:
+        ret.add(int(s, i) % MOD)
+    except:
+        pass
+ret = list(ret)
+ret.sort()
+for num in ret:
+    print(num)
+```
+
+## 29. 小球投盒
+
+简单模拟
+
+```Python
+n, m = [int(_) for _ in input().split()]
+rs = set(range(1, n + 1))
+
+def cal():
+    global rs
+    for i in range(m):
+        t, x = [int(_) for _ in input().split()]
+        if t == 1:
+            if x in rs:
+                rs.remove(x)
+            if not rs:
+                return i + 1
+        else:
+            if x in rs:
+                rs = set()
+                rs.add(x)
+            else:
+                return i + 1
+    else:
+        return -1
+
+print(cal())
+```
+
+
+## 30. 数字变换
+
+因子分解
+
+```Python
+a, b = [int(_) for _ in input().split()]
+
+def cal():
+    global a, b
+    if b % a:
+        return -1
+    
+    m = b // a
+    ret = 0
+    for i in range(2, int(m ** 0.5) + 1):
+        while m and m % i == 0:
+            ret += 1
+            m //= i
+    
+    if m > 1:
+        ret += 1
+    return ret
+    
+print(cal())
+```
+
+## 31. 二叉树
+
+思路：dp，记忆化搜索
+
+```Python
+from functools import cache
+MOD = 10 ** 9 + 7
+@cache
+def dfs(n, m):
+    if (1 << m) - 1 < n:
+        return 0
+    if n == 0:
+        return 1
+    
+    ret = 0
+    for i in range(n):
+        ret = (ret + dfs(i, m - 1) * dfs(n - 1 - i, m - 1)) % MOD
+    return ret 
+
+_n, _m = [int(_) for _ in input().split()]
+print(dfs(_n, _m))
+```
+
+
+## 32. 魔塔
+
+尚未接触
+
+## 33. 树上最短路
+
+思路：一个节点的二进制表示的任意前缀均为该节点的父节点，通过寻找两个节点二进制表示的最长公共前缀即可找到最近公共父节点
+
+```Python
+def cal(x, y):
+    xb = str(bin(x))
+    yb = str(bin(y))
+    
+    i = 2
+    while i < len(xb) and i < len(yb) and xb[i] == yb[i]:
+        i += 1
+    return len(xb) - i + len(yb) - i
+
+T = int(input())
+for _ in range(T):
+    a, b = [int(_) for _ in input().split()]
+
+    print(cal(a, b))
+```
+
+## 34. 游游的字母串
+
+暴力遍历将每个字符替换成a-z的情况，取最小值，计算量为26 * 26
+
+```Python
+from math import inf
+s = input()
+
+n = len(s)
+counts = [0] * 26
+
+for i in range(n):
+    counts[ord(s[i]) - ord('a')] += 1
+
+ret = inf
+for target in range(26):
+    c = 0
+    for j in range(26):
+        c += counts[j] * min((j - target + 26) % 26, (target - j + 26) % 26)
+    # print(target, c)
+    ret = min(ret, c)
+print(ret)
+```
+
+## 35. 游游的三色数
+
+思路：dfs，求得以每个节点为根节点的子树的颜色统计，再遍历每个节点是否能够与其父节点断开
+
+```Python
+import sys
+sys.setrecursionlimit(10 ** 9)
+
+n = int(input())
+s = input()
+s = ' ' + s
+parents = [0] * (n + 1)
+
+conns = {_:[] for _ in range(1, n + 1)}
+for _ in range(n - 1):
+    u, v = [int(_) for _ in input().split()]
+    conns[u].append(v)
+    conns[v].append(u)
+
+rs = [0] * (n + 1)
+gs = [0] * (n + 1)
+bs = [0] * (n + 1)
+
+def dfs(node, parent):
+    parents[node] = parent
+    if s[node] == 'r':
+        rs[node] += 1
+    elif s[node] == 'g':
+        gs[node] += 1
+    else:
+        bs[node] += 1
+
+    for child in conns[node]:
+        if not child == parent:
+            dfs(child, node)
+            rs[node] += rs[child]
+            gs[node] += gs[child]
+            bs[node] += bs[child]
+dfs(1, 0)
+
+ret = 0
+
+for i in range(2, n + 1):
+    if rs[1] == rs[i] or gs[1] == gs[i] or bs[1] == bs[i] or rs[i] == 0 or gs[i] == 0 or bs[i] == 0:
+        pass
+    else:
+        ret += 1
+print(ret)
+```
+
+## 36. 活动安排
+
+经典贪心问题，根据活动的右节点排序
+
+```Python
+n = int(input())
+
+acts = []
+
+for _ in range(n):
+    a, b = [int(_) for _ in input().split()]
+    acts.append((a, b))
+
+acts.sort(key=lambda x: x[-1])
+
+ret = 0
+last = 0
+
+for a, b in acts:
+    if a >= last:
+        ret += 1
+        last = b
+print(ret)
+```
+
+## 37. 
