@@ -1208,4 +1208,415 @@ for a, b in acts:
 print(ret)
 ```
 
-## 37. 
+## 37. 牛牛的ackmann
+
+吓我一跳，以为要计算大整数然后用字符串打印；其实就是实现个递归
+
+```Python
+import sys
+sys.setrecursionlimit(10 ** 9)
+def ackmann(m, n):
+    if m == 0:
+        return n + 1
+    if n == 0:
+        return ackmann(m - 1, 1)
+    return ackmann(m - 1, ackmann(m, n - 1))
+
+a, b = [int(_) for _ in input().split()]
+print(ackmann(b, a))
+```
+
+## 38. 跳台阶
+
+经典dp
+
+```Python
+from functools import cache
+import sys
+sys.setrecursionlimit(10 ** 9)
+
+@cache
+def skip(n):
+    if n == 1 or n == 0:
+        return 1
+    return skip(n - 1) + skip(n - 2)
+
+num = int(input())
+print(skip(num))
+```
+
+## 39. 超级圣诞树
+
+找规律，递归
+
+```Python
+def tri(n):
+    if n == 1:
+        return ['  *  ', ' * * ', '* * *']
+    last = tri(n - 1)
+    return [' ' * len(last) + _ + ' ' * len(last) for _ in last] + [_ + ' ' + _ for _ in last]
+
+_n = int(input())
+for line in tri(_n):
+    print(line)
+
+length = 3 << (_n - 1)
+for i in range(_n):
+    print(' ' * (length - 1) + '*')
+```
+
+## 40. 小红的数组
+
+思路： 对于大于和小于的组合的计算，分别通过双指针滑动窗口解决，对于等于的情况，直接遍历统计 k // ai 的值
+
+```Python
+n, k = [int(_) for _ in input().split()]
+
+a = [int(_) for _ in input().split()]
+a.sort()
+j = n - 1
+
+r1, r2, r3 = 0, 0, 0
+
+for i in range(n - 1):
+    while j > i and a[i] * a[j] > k:
+        j -= 1
+    # print(i, j)
+    r1 += n - 1 - max(i, j)
+
+# print(r1)
+
+c = {}
+for ai in a:
+    if ai not in c:
+        c[ai] = 0
+    c[ai] += 1
+
+for ai in a:
+    if k % ai == 0:
+        if k // ai in c:
+            r2 += c[k // ai]
+            if ai * ai == k:
+                r2 -= 1
+r2 >>= 1
+# print(r2)
+
+j = n - 1
+
+for i in range(n - 1):
+    while j > i and a[i] * a[j] >= k:
+        j -= 1
+    r3 += max(0, j - i)
+    # print(i, j)
+print(r1, r2, r3)
+```
+
+## 41. 添数博弈
+
+## 42. 吃糖果
+
+贪心，排序
+
+```Python
+n, k = [int(_) for _ in input().split()]
+a = [int(_) for _ in input().split()]
+
+a.sort()
+
+ret = 0
+
+i = 0
+while i < n and k >= a[i]:
+    k -= a[i]
+    ret += 1
+    i += 1
+print(ret)
+```
+
+## 43. 开心还是难过
+
+简单模拟
+
+```Python
+s = input()
+n = len(s)
+r1, r2 = 0, 0
+for i in range(len(s) - 2):
+    if s[i: i + 3] == ':-)':
+        r1 += 1
+    if s[i: i + 3] == ':-(':
+        r2 += 1
+
+if not r1 and not r2:
+    print('None')
+elif r1 > r2:
+    print('Happy')
+elif r1 == r2:
+    print('Just so so')
+else:
+    print('Sad')
+```
+
+## 44. 数字游戏
+
+思路：把除最后一位的剩余数字m和最后一位n作为对象，m的奇偶性和最后一位的值组合的状态转移关系有：
+
+(偶，0) -> (奇，0) -> (奇，1) -> (偶，1) -> (偶，0)
+
+为此可以如下计算
+
+如何快速计算一个数字的各bit位之和？
+
+方法1：位移+统计 超时了！
+
+```Python
+def cal(x):
+    t = 0
+    while x:
+        x >>= 1
+        t += 1
+    return t
+```
+
+方法2 快速统计low bit
+
+```Python
+def cal(x):
+    t = 0
+    while x:
+        x -= x & -x
+        t += 1
+    return t
+```
+
+实现：
+
+```Python
+def cal(x):
+    t = 0
+    while x:
+        x -= x & -x
+        t += 1
+    return t
+
+T = int(input())
+for _ in range(T):
+    n = int(input())
+    x, y = cal(n >> 1), n & 1
+    r = 0
+    if not x & 1 and not y:
+        r = 2 * x
+    elif not x & 1 and y:
+        r = 2 * x + 1
+    elif x & 1 and not y:
+        r = 2 * (x + 1) - 1
+    else:
+        r = 2 * x
+    print(r)
+```
+
+## 45. 对称之美
+
+贪心，每次都从需要对称的字符串中只选取一个字符
+
+```Python
+def cal(n, ss):
+    i, j = 0, n - 1
+    while i < j:
+        si, sj = set(list(ss[i])), set(list(ss[j]))
+        if not si & sj:
+            return False
+        i += 1
+        j -= 1
+    return True
+
+t = int(input())
+
+for _ in range(t):
+    num = int(input())
+
+    strings = []
+    for __ in range(num):
+        strings.append(input())
+    if cal(num, strings):
+        print('Yes')
+    else:
+        print('No')
+```
+
+## 46. 异或和之和
+
+对于每一个数位，计算有多少种选取的策略
+
+```Python
+from math import comb
+n = int(input())
+a = [int(_) for _ in input().split()]
+
+bits_count = [0] * ((10 ** 18).bit_length())
+bn = len(bits_count)
+for ai in a:
+    for i in range(bn):
+        if (ai >> i) & 1:
+            bits_count[i] += 1
+
+ret = 0
+MOD = 1000000007
+for i, bc in enumerate(bits_count):
+    ret = (ret + (1 << i) * (bc * comb(n - bc, 2) + comb(bc, 3))) % MOD
+
+print(ret)
+```
+
+## 47. 四个选项
+
+并查集 + 深搜回溯
+
+1. 通过并查集计算各联通分支的规模
+
+2. 最多只有 ` 4 ^ 12 ` 种分配方式，可以通过深搜回溯暴力解决 
+
+```Python
+class UnionFind:
+    def __init__(self, n):
+        self._p = list(range(n))
+        self.size = [1] * n
+
+    def find(self, x):
+        if not self._p[x] == x:
+            self._p[x] = self.find(self._p[x])
+        return self._p[x]
+    
+    def merge(self, from_, to):
+        x, y = self.find(from_), self.find(to)
+        if not x == y:
+            self._p[x] = y
+            self.size[y] += self.size[x]
+
+
+na, nb, nc, nd, m = [int(_) for _ in input().split()]
+n = 12
+uf = UnionFind(n)
+
+for _ in range(m):
+    x, y = [int(_) for _ in input().split()]
+    uf.merge(x - 1, y - 1)
+
+sizes = []
+
+for i in range(n):
+    p = uf.find(i)
+    if i == p:
+        sizes.append(uf.size[i])
+
+import sys
+sys.setrecursionlimit(10 ** 9)
+ret = 0
+def dfs(i):
+    global na, nb, nc, nd, ret
+    if i == len(sizes):
+        if na == nb == nc == nd == 0:
+            ret += 1
+        return
+    if na >= sizes[i]:
+        na -= sizes[i]
+        dfs(i + 1)
+        na += sizes[i]
+
+    if nb >= sizes[i]:
+        nb -= sizes[i]
+        dfs(i + 1)
+        nb += sizes[i]
+    
+    if nc >= sizes[i]:
+        nc -= sizes[i]
+        dfs(i + 1)
+        nc += sizes[i]
+    
+    
+    if nd >= sizes[i]:
+        nd -= sizes[i]
+        dfs(i + 1)
+        nd += sizes[i]
+dfs(0)
+print(ret)
+```
+
+## 48. COUNT数字计数
+
+思路：逐位统计1-9的出现频率，假设此时遍历的位置为第i位（从低到高）其值为x，其左边部分的值为pre，右边部分值为post，可以分三种情况讨论
+
+1. 1 ~ x-1, 此时左边部分不超过pre，右边任选，其数量为 ` (pre + 1) * (10 ** i) `
+2. x，此时有两种情况，一、左边选择和目标值一样的，右边不能超过post；二、左边选择比目标值小的值，右边任选。此时数量为 ` post + 1 + pre * (10 ** i) `
+3. x-1 ~ 9，左边不超过pre，右边任选，其数量为 ` pre * (10 ** i) `
+
+为了防止前导0问题，上述过程没有计算0的取值种类数，可以在最后通过统计所有数字的数量再减去1-9的数量的方法计算
+
+```Python
+def cal(x):
+    if x == 0:
+        return [1, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    t = []
+    k = x
+    while k:
+        t.append(k % 10)
+        k //= 10
+    pre = x // 10
+    post = 0
+    nt = len(t)
+    ret = [0] * 10
+    for i in range(nt):
+        times = [0] * 10
+        for j in range(1, t[i]):
+            times[j] += (pre + 1) * (10 ** i)
+        times[t[i]] += post + 1 + pre * (10 ** i)
+        for j in range(t[i] + 1, 10):
+            times[j] += pre * (10 ** i)
+            
+        # print(pre, post, t[i], times)
+        pre //= 10
+        post += t[i] * (10 ** i)
+
+        for i in range(1, 10):
+            ret[i] += times[i]
+    total = 0
+    for i in range(1, nt):
+        if i == 1:
+            total += 10
+        else:
+            total += i * 9 * (10 ** (i - 1))
+    total += nt * (x - (10 ** (nt - 1)) + 1) 
+    non0 = sum(ret)
+    ret[0] = total - non0
+    return ret
+
+a, b = [int(_) for _ in input().split()]
+ar = cal(a - 1) 
+br = cal(b)
+# print(ar, br)
+for i in range(10):
+    print(br[i] - ar[i], end=' ')
+```
+
+## 49. 和零在一起
+
+计算组合数
+
+```Python
+n = int(input())
+s = input()
+MOD = 1000000007
+index0 = []
+for i in range(n):
+    if s[i] == '0':
+        index0.append(i)
+if not index0:
+    print(0)
+else:
+    ret = 1
+    for i in range(1, len(index0)):
+        ret = ret * (index0[i] - index0[i - 1]) % MOD
+    print(ret)
+
+```
+
